@@ -1,38 +1,188 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Document Management System</title>
+
+    <style>
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body{
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            min-height:100vh;
+            padding:40px;
+        }
+
+        .container{
+            max-width:1000px;
+            margin:auto;
+        }
+
+        .card{
+            background:white;
+            padding:30px;
+            border-radius:15px;
+            box-shadow:0 10px 25px rgba(0,0,0,0.15);
+            margin-bottom:30px;
+        }
+
+        h1{
+            text-align:center;
+            color:#333;
+            margin-bottom:25px;
+        }
+
+        form p{
+            margin-bottom:15px;
+        }
+
+        input[type="file"]{
+            width:100%;
+            padding:10px;
+            border:2px dashed #667eea;
+            border-radius:8px;
+        }
+
+        .upload-btn{
+            background:#667eea;
+            color:white;
+            border:none;
+            padding:12px 25px;
+            border-radius:8px;
+            cursor:pointer;
+            font-size:16px;
+            transition:.3s;
+        }
+
+        .upload-btn:hover{
+            background:#4f61d8;
+        }
+
+        table{
+            width:100%;
+            border-collapse:collapse;
+            overflow:hidden;
+            border-radius:12px;
+        }
+
+        thead{
+            background:#667eea;
+            color:white;
+        }
+
+        th, td{
+            padding:15px;
+            text-align:left;
+        }
+
+        tbody tr:nth-child(even){
+            background:#f5f7ff;
+        }
+
+        tbody tr:hover{
+            background:#eef1ff;
+        }
+
+        .btn{
+            text-decoration:none;
+            color:white;
+            padding:8px 12px;
+            border-radius:6px;
+            margin-right:5px;
+            font-size:14px;
+        }
+
+        .view{
+            background:#17a2b8;
+        }
+
+        .download{
+            background:#28a745;
+        }
+
+        .delete{
+            background:#dc3545;
+        }
+
+        .btn:hover{
+            opacity:0.85;
+        }
+
+        .empty{
+            text-align:center;
+            color:#777;
+            padding:20px;
+        }
+    </style>
 </head>
 <body>
-    <form action="upload" method="post", enctype="multipart/form-data">
-        {%csrf_token%}
-        {{form.as_p}}
-        <button type="submit">Upload</button>
-    </form>
 
-    <table border="4">
-        <thead>
-            <tr>
-                <th>Document Name</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        
-            {%for i in data%}
-            <tr>
-            <td>
-                {{i.File}}
-            <td>
-                <td>
-                <a href="views.delete"></a>
-                <a href="views.view"></a>
-                <a href="views.download"></a>
-                </td>
-        </tr>
-        {%endfor%}
-        
-       </table>
+<div class="container">
+
+    <div class="card">
+        <h1>📁 Document Management System</h1>
+
+        <form action="{% url 'upload' %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+
+            <button type="submit" class="upload-btn">
+                Upload Document
+            </button>
+        </form>
+    </div>
+
+    <div class="card">
+        <h1>Uploaded Documents</h1>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Document Name</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for i in data %}
+                <tr>
+                    <td>{{ i.File }}</td>
+
+                    <td>
+                        <a href="{% url 'view' i.id %}" class="btn view">View</a>
+
+                        <a href="{% url 'download' i.id %}" class="btn download">
+                            Download
+                        </a>
+
+                        <a href="{% url 'delete' i.id %}"
+                           class="btn delete"
+                           onclick="return confirm('Delete this file?')">
+                            Delete
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="2" class="empty">
+                        No documents uploaded yet.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+
+        </table>
+    </div>
+
+</div>
+
 </body>
 </html>
+```

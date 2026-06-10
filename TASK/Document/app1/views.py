@@ -1,30 +1,38 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.http import FileResponse
 from .forms import DocumentForm
 from .models import Document
 
-# Create your views here.
 
 def upload(request):
-    data= Document.objects.all()
+    data = Document.objects.all()
+
     if request.method == 'POST':
-        form = DocumentForm(request.POST,request.FILES)
+        form = DocumentForm(request.POST, request.FILES)
+
         if form.is_valid():
             form.save()
-            return render(request,'task.html',context={'form':form,'data':data})
+            return redirect('upload')
+
     form = DocumentForm()
-    return render(request,'task.html',context={'form':form,'data':data})
+    return render(request, 'task.html', {'form': form, 'data': data})
 
 
-def delete(request,pk):
+def delete(request, pk):
     d = Document.objects.get(pk=pk)
     d.delete()
-    return d
-
-def view(request,pk):
-    v=Document.object.get(pk=pk)
-    return v
-def download(request,pk):
-    dp=Document.objects.get(pk=pk)
+    return redirect('upload')
 
 
+def view(request, pk):
+    doc = Document.objects.get(pk=pk)
+    return FileResponse(doc.File.open('rb'))
 
+
+def download(request, pk):
+    doc = Document.objects.get(pk=pk)
+
+    response = FileResponse(doc.File.open('rb'))
+    response['Content-Disposition'] = f'attachment; filename="{doc.File.name}"'
+
+    return response
