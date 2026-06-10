@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form action="upload" method="post", enctype="multipart/form-data">
+        {%csrf_token%}
+        {{form.as_p}}
+        <button type="submit">Upload</button>
+    </form>
+
+    <table border="4">
+        <thead>
+            <tr>
+                <th>Document Name</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        
+            {%for i in data%}
+            <tr>
+            <td>
+                {{i.File}}
+            <td>
+                <td>
+                <a href="views.delete"></a>
+                <a href="views.view"></a>
+                <a href="views.download"></a>
+                </td>
+        </tr>
+        {%endfor%}
+        
+       </table>
+</body>
+</html>
